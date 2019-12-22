@@ -1,70 +1,140 @@
 // eslint-disable-next-line no-unused-vars
 import React from 'react';
-import WorkerChannel from './WorkerChannel';
-// const TaskRouter = require('twilio-taskrouter');
-import { Worker } from 'twilio-taskrouter'
+import Url from 'url'
+import Axios from 'axios';
+
+import WorkerChannelPanel from './WorkerChannelPanel';
+import {
+  SectionHeader,
+  Container,
+  WorkerChannelsContainer,
+  ButtonsContainer,
+  SaveButton,
+  ResetButton,
+} from './SupervisorCapacity.styles' 
+
+/*
+  TODO
+  ----
+
+  - COMMENT COMMENT COMMENT
+  - Error & edge case handling
+
+*/
 
 export default class SupervisorCapacity extends React.Component {
   constructor(props) {
     super(props);
+
     this.state = {
-      workerChannels: []
+      workerChannels: [],
+      changed: false,
+      loading: true
     }
 
-    console.log(WorkerChannel)
-
+    this.saveFunctions = [];
+    this.resetFunctions = [];
 
     this.getWorkerChannels();
+  }
 
-    window.log("this.state", this.state)
-    window.log("this.props", this.props)
+  setWorkerChannelChanged(workerChannelSid, changed) {
+    this.workerChannelChanges[workerChannelSid] = changed;
+    this.updateChanged();
+  }
+
+  addSaveFunction(fn) {
+    this.saveFunctions.push(fn);
+  }
+
+  addResetFunction(fn) {
+    this.resetFunctions.push(fn);
+  }
+
+  updateChanged() {
+    let changed = Object.values(this.workerChannelChanges).includes(true);
+
+    if (this.state.changed !== changed) {
+      return this.setState({
+        changed: changed
+      });
+    }
   }
 
   async getWorkerChannels() {
-    window.log("TaskRouterWorker", Worker)
-    // let twilioClient = Twilio(this.props.accountSid, this.props.authToken)
-    // window.log(twilioClient.taskrouter.workspaces(this.props.workspace).workers(this.props.worker.sid).workerChannels.list())
+    try {
+      let axiosOptions = {
+        params: 
+        {
+          Token: this.props.token,
+          workerSid: this.props.worker.sid
+        }
+      }
+      let url = Url.resolve(this.props.runtimeDomain, 'getWorkerChannelCapacity')
+      let response = await Axios.get(url, axiosOptions);
+
+      if (!response || !response.data) {
+        throw new Error("No response from server")
+      } else if(!response.data.workerChannels) {
+        throw new Error("Worker has no WorkerChannels")
+      }
+
+      await this.setState({workerChannels: []})
+      this.workerChannelChanges = {}
+      this.updateChanged()
+      await this.setState({workerChannels: response.data.workerChannels})
+      await this.setState({loading: false});
+
+    } catch(e) {
+      window.err("Error fetching Worker Channels: ", e)
+    }
+  }
+
+  reset() {   
+    this.resetFunctions.forEach((resetFunction) => {resetFunction()})
+  }
+
+  async save() {
+    this.setState({loading: true})
+    await Promise.all(this.saveFunctions.map((saveFunction) => {return saveFunction()}))
+    this.setState({loading: false})
+    // .then(this.getWorkerChannels.bind(this));
   }
 
   render() {
-    let containerStyle = { 
-      paddingTop: '20px'
+    if (this.state.workerChannels.length > 0) {
+      return <Container>
+        <SectionHeader>
+          Channel Capacity
+        </SectionHeader>
+
+        <WorkerChannelsContainer className={this.state.loading ? "disabled" : "enabled"}>
+          {this.state.workerChannels.map((workerChannel) => {
+            return <WorkerChannelPanel
+              token={this.props.token} 
+              runtimeDomain={this.props.runtimeDomain} 
+              addResetFunction={this.addResetFunction.bind(this)} 
+              addSaveFunction={this.addSaveFunction.bind(this)} 
+              workerChannel={workerChannel} 
+              setWorkerChannelChanged={this.setWorkerChannelChanged.bind(this)}
+            />
+          })}
+        </WorkerChannelsContainer>
+
+        <ButtonsContainer>
+          <SaveButton className="Twilio-Button" disabled={!this.state.changed || this.state.loading} onClick={this.save.bind(this)}>Save</SaveButton>
+          <ResetButton className="Twilio-Button" disabled={!this.state.changed || this.state.loading} onClick={this.reset.bind(this)}>Reset</ResetButton>
+        </ButtonsContainer>
+      </Container>
+    } else {
+      return <Container>
+        <SectionHeader>
+          Channel Capacity
+        </SectionHeader>
+        <WorkerChannelsContainer>
+          No Worker Channels available
+        </WorkerChannelsContainer>
+      </Container>
     }
-
-    let headerStyle = {
-      fontSize: "10px",
-      fontWeight: "bold",
-      letterSpacing: "2px",
-      paddingLeft: "11px",
-      alignItems: "center",
-      height: "24px",
-      textTransform: "uppercase",
-      color: "rgb(34, 34, 34)",
-      flex: "0 0 auto",
-      borderStyle: "solid",
-      borderWidth: "0px 0px 1px",
-      borderColor: "rgb(198, 202, 215)",
-    }
-
-    let bodyStyle = {
-      padding: "12px 12px 12px 12px",
-      position: "relative",
-      overflowX: "hidden",
-      display: "flex",
-      flexWrap: "nowrap",
-      flexGrow: 0,
-      flexShrink: 0,
-      flexDirection: "column",
-    }
-
-    return <div style={containerStyle}>
-      <div class="Twilio-WorkerCanvas-SectionHeader" style={headerStyle}>
-        Channel Capacity
-      </div>
-
-      <div style={bodyStyle}>
-        
-      </div>
-    </div>
   }
 }

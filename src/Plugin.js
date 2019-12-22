@@ -2,6 +2,7 @@
 import React from 'react';
 import { FlexPlugin } from 'flex-plugin';
 import * as Mods from './Mods'
+import PluginConfig from './config'
 
 import SupervisorCapacity from './Components/SupervisorCapacity';
 
@@ -26,7 +27,8 @@ export default class Plugin extends FlexPlugin {
       addCustomTaskList: false,
     });
 
-    flex.WorkerCanvas.Content.add(<SupervisorCapacity key="supervisor-capacity" workspace={manager.serviceConfiguration.taskrouter_workspace_sid} accountSid={manager.serviceConfiguration.account_sid} authToken={manager.user.token}/>)
+    flex.WorkerCanvas.Content.add(<SupervisorCapacity key="supervisor-capacity" runtimeDomain={PluginConfig.runtimeDomain} token={manager.user.token} />)
+
   }
 
 }

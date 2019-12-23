@@ -13,15 +13,6 @@ import {
   ResetButton,
 } from './SupervisorCapacity.styles' 
 
-/*
-  TODO
-  ----
-
-  - Rename 'getWorkerChannelCapacity' to `getWorkerChannels`
-  - Error & edge case handling
-
-*/
-
 //  ============================================================================
 //  = SupervisorCapacity                                                       =
 //  = ------------------                                                       =
@@ -121,7 +112,7 @@ export default class SupervisorCapacity extends React.Component {
           workerSid: this.props.worker.sid
         }
       };
-      let url = Url.resolve(this.props.runtimeDomain, 'getWorkerChannelCapacity');
+      let url = Url.resolve(this.props.runtimeDomain, 'getWorkerChannels');
 
       let response = await Axios.get(url, axiosOptions);
 

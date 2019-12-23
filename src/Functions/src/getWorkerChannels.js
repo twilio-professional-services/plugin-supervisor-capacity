@@ -1,8 +1,8 @@
 const TokenValidator = require('twilio-flex-token-validator').functionValidator;
 
 //  ============================================================================
-//  = getWorkerChannelCapacity                                                 =
-//  = ------------------------                                                 =
+//  = getWorkerChannels                                                        =
+//  = -----------------                                                        =
 //  = Gets all WorkerChannels for a given Worker                               =
 //  ============================================================================
 exports.handler = TokenValidator(async function(context, event, callback) {

@@ -17,40 +17,85 @@ import {
   TODO
   ----
 
-  - COMMENT COMMENT COMMENT
+  - Rename 'getWorkerChannelCapacity' to `getWorkerChannels`
   - Error & edge case handling
 
 */
+
+//  ============================================================================
+//  = SupervisorCapacity                                                       =
+//  = ------------------                                                       =
+//  = The base Component for the Supervisor Capacity plugin. Styling is        =
+//  = done via React Emotion                                                   =
+//  =                                                                          =
+//  = https://www.twilio.com/docs/flex/creating-styling-custom-components      =
+//  ============================================================================
 
 export default class SupervisorCapacity extends React.Component {
   constructor(props) {
     super(props);
 
+    // - We're going to store the raw WorkerChannels under State for the initial
+    //   Render.
+    // - `changed` will be used to enable/disable the save/reset buttons
+    // - `loading` will also modify the buttons, as well as graying out the form
     this.state = {
       workerChannels: [],
       changed: false,
       loading: true
-    }
+    };
 
+    // We want each WorkerChannel subcomponent to handle its own state, but we
+    // also want this component's Save/Reset buttons to work. Therefore, we will
+    // need to save each subcomponent's save/reset functions in a list here
     this.saveFunctions = [];
     this.resetFunctions = [];
 
+    // Pull this worker's WorkerChannels from the TwilioAPI (once set, this
+    // should also trigger a re-render)
     this.getWorkerChannels();
   }
 
+  /**
+   * This function gets passed into WorkerChannel subcomponents. Each 
+   * subcomponent can then use it to notify this Component of a change
+   * 
+   * @param {string}  workerChannelSid - the SID of the changed WorkerChannel
+   * @param {boolean} changed - True/Fals, whether the WorkerChannel has changed
+   */
   setWorkerChannelChanged(workerChannelSid, changed) {
+    // The workerChannelChanges dict tracks changes in WorkerChannel
+    // subcomponents
     this.workerChannelChanges[workerChannelSid] = changed;
     this.updateChanged();
   }
 
+  /**
+   * This function gets passed into WorkerChannel subcompenents. Each 
+   * subcomponent can then send its Save functions up to this Component for use
+   * by the Save Button
+   * 
+   * @param {function} fn - The subcomponent's Save function
+   */
   addSaveFunction(fn) {
     this.saveFunctions.push(fn);
   }
 
+  /**
+   * This function gets passed into WorkerChannel subcompenents.  Each 
+   * subcomponent can then send its Reset functions up to this Component for use
+   * by the Reset Button
+   * 
+   * @param {function} fn - The subcomponent's Reset function
+   */
   addResetFunction(fn) {
     this.resetFunctions.push(fn);
   }
 
+  /**
+   * Determines whether any WorkerChannels have changed using the
+   * workerChannelChanges dict, then updates the `changed` state boolean
+   */
   updateChanged() {
     let changed = Object.values(this.workerChannelChanges).includes(true);
 
@@ -61,46 +106,67 @@ export default class SupervisorCapacity extends React.Component {
     }
   }
 
+  /**
+   * Pulls this worker's WorkerChannels from the TwilioAPI, then updates this
+   * component's State with the new workerChannels
+   */
   async getWorkerChannels() {
+    await this.setState({loading: true}); // Start out with a `true` loading state
+
     try {
+
       let axiosOptions = {
-        params: 
-        {
+        params: {
           Token: this.props.token,
           workerSid: this.props.worker.sid
         }
-      }
-      let url = Url.resolve(this.props.runtimeDomain, 'getWorkerChannelCapacity')
+      };
+      let url = Url.resolve(this.props.runtimeDomain, 'getWorkerChannelCapacity');
+
       let response = await Axios.get(url, axiosOptions);
 
       if (!response || !response.data) {
-        throw new Error("No response from server")
+        throw new Error("No response from server");
       } else if(!response.data.workerChannels) {
-        throw new Error("Worker has no WorkerChannels")
+        throw new Error("Worker has no WorkerChannels");
       }
 
-      await this.setState({workerChannels: []})
-      this.workerChannelChanges = {}
-      this.updateChanged()
-      await this.setState({workerChannels: response.data.workerChannels})
-      await this.setState({loading: false});
+      // Give us a blanks slate to work from
+      await this.setState({workerChannels: []}); // Empty out the workerChannels
+      this.workerChannelChanges = {};            // Empty out workerChannelChanges
+      this.updateChanged();                      // Set our changed state based on the above
+
+      await this.setState({ workerChannels: response.data.workerChannels }); // Store our new WorkerChannels
+       
 
     } catch(e) {
-      window.err("Error fetching Worker Channels: ", e)
+      window.err("Error fetching Worker Channels: ", e);
+    } finally {
+      await this.setState({loading: false}); // End up with a `false` loading state
+
     }
   }
 
+  /**
+   * Iterates over all the stored workerChannel Reset functions and runs them
+   */
   reset() {   
-    this.resetFunctions.forEach((resetFunction) => {resetFunction()})
+    this.resetFunctions.forEach((resetFunction) => {resetFunction()});
   }
 
+  /**
+   * Iterates over all the stored workerChannel Save functions and runs them
+   * also setting the `loading` state before and after the functions run
+   */
   async save() {
-    this.setState({loading: true})
-    await Promise.all(this.saveFunctions.map((saveFunction) => {return saveFunction()}))
-    this.setState({loading: false})
-    // .then(this.getWorkerChannels.bind(this));
+    this.setState({loading: true}); // Start out with a `true` loading state
+    await Promise.all(this.saveFunctions.map((saveFunction) => {return saveFunction()}));
+    this.setState({loading: false}); // End up with a `false` loading state
   }
 
+  /**
+   * Render function
+   */
   render() {
     if (this.state.workerChannels.length > 0) {
       return <Container>
@@ -125,6 +191,15 @@ export default class SupervisorCapacity extends React.Component {
           <SaveButton className="Twilio-Button" disabled={!this.state.changed || this.state.loading} onClick={this.save.bind(this)}>Save</SaveButton>
           <ResetButton className="Twilio-Button" disabled={!this.state.changed || this.state.loading} onClick={this.reset.bind(this)}>Reset</ResetButton>
         </ButtonsContainer>
+      </Container>
+    } else if (this.state.loading) {
+      return <Container>
+        <SectionHeader>
+          Channel Capacity
+        </SectionHeader>
+        <WorkerChannelsContainer>
+          <span className="pulsate">. . . loading</span>
+        </WorkerChannelsContainer>
       </Container>
     } else {
       return <Container>

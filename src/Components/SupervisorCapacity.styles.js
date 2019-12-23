@@ -1,4 +1,4 @@
-import styled from 'react-emotion';
+import styled, { keyframes } from 'react-emotion';
 
 export const SectionHeader = styled('div')`
   font-size: 10px;
@@ -30,13 +30,29 @@ export const Container = styled('div')`
   }
 `
 
+let PulsateCSS = keyframes`
+  0% { 
+    opacity: 0;
+  }
+  50% { 
+    opacity: 1.0;
+  }
+  100% { 
+    opacity: 0;
+  }
+`
+
 export const WorkerChannelsContainer = styled('div')`
   margin: 12px 12px 12px 12px;
   position: relative;
+  .pulsate {
+    animation: ${PulsateCSS} 1s ease infinite;
+  }
 `
 
 export const ButtonsContainer = styled('div')`
   margin-top: 32px;
+  margin-bottom: 10px;
   padding-left: 12px;
   padding-right: 12px;
   overflow-x: hidden;

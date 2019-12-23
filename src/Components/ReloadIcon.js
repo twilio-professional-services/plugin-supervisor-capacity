@@ -1,5 +1,10 @@
 import React from "react";
 
+//  ============================================================================
+//  = Reload Icon                                                              =
+//  = -----------                                                              =
+//  = An SVG icon for refreshing content                                       =
+//  ============================================================================
 export default function ReloadIcon() {
   return (
     <svg

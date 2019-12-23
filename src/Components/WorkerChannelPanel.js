@@ -12,56 +12,96 @@ import {
 
 import ReloadIcon from './ReloadIcon'
 
+
+//  ============================================================================
+//  = WorkerChannelPanel                                                       =
+//  = ------------------                                                       =
+//  = Renders a row for a single WorkerChannel. Styling is                     =
+//  = done via React Emotion                                                   =
+//  =                                                                          =
+//  = https://www.twilio.com/docs/flex/creating-styling-custom-components      =
+//  ============================================================================
 export default class WorkerChannelPanel extends React.Component {
   constructor(props) {
     super(props);
-    // window.log(this.state, this.props)
+
+    // `capacity` is instantiated as the initial capacity and updated via the UI
+    // `workerChannel` is this component's raw WorkerChannel
+    // `saving` is a boolean to track whether this component is currently saving
     this.state = {
       capacity: this.props.workerChannel.configuredCapacity,
       workerChannel: this.props.workerChannel,
       saving: false,
-    }
+    };
   }
 
+  /**
+   * Send this component's Reset and Save functions to the supercomponent
+   */
   componentDidMount() {
     this.props.addResetFunction(this.reset.bind(this));
     this.props.addSaveFunction(this.save.bind(this));
   }
 
+  /**
+   * Receives a new capacity value, then updates this component's state and 
+   * notifies the supercomponent
+   * 
+   * @param  {integer} newCapacity - The newly-set Capacity value
+   */
   handleChange(newCapacity) {
     this.setState({capacity: newCapacity}, () => {
-      this.props.setWorkerChannelChanged(this.state.workerChannel.sid, this.state.workerChannel.configuredCapacity !== this.state.capacity )
-    })
+      this.props.setWorkerChannelChanged(this.state.workerChannel.sid, this.state.workerChannel.configuredCapacity !== this.state.capacity );
+    });
   }
 
+  /**
+   * Input change handler. Coerces the value into an int and sends that to
+   * handleChange
+   * 
+   * @param  {event} event - the UI event
+   */
   onCapacityChange(event) {
     if (event.target.value === "") {
-      this.handleChange(null)
+      this.handleChange(null);
     } else if (!isNaN(event.target.value)) {
-      this.handleChange(parseInt(event.target.value))
+      this.handleChange(parseInt(event.target.value));
     }
   }
 
+  /**
+   * Input off-focus handler. Forces the Capacity value to the expected range
+   * 
+   * @param  {event} event - the UI event
+   */
   onCapacityBlur(event) {
     if (event.target.value === "" || event.target.value === null || event.target.value < 0) {
-      this.handleChange(0);
+      this.handleChange(0); // min value = 0
     } else if (event.target.value > 50) {
-      this.handleChange(50);
+      this.handleChange(50); // max value = 50
     }
   }
 
+  /**
+   * Sets this Component's capacity to its original value
+   */
   reset() {
     this.handleChange(this.state.workerChannel.configuredCapacity);
   }
 
+  /**
+   * Stores this component's Capacity in Twilio.
+   */
   async save() {
     if (this.state.workerChannel.configuredCapacity !== this.state.capacity) {
+      await this.setState({saving: true}); // Start out with a `true` saving state
+
       try {
         let axiosBody = {
           workerSid: this.state.workerChannel.workerSid,
           workerChannelSid: this.state.workerChannel.sid,
           capacity: this.state.capacity
-        }
+        };
         let axiosOptions = {
           params: {
             Token: this.props.token,
@@ -69,27 +109,31 @@ export default class WorkerChannelPanel extends React.Component {
           headers: {
               'Content-Type': 'application/json',
           }
-        }
-        let url = Url.resolve(this.props.runtimeDomain, 'setWorkerChannelCapacity')
-        await this.setState({saving: true})
+        };
+        let url = Url.resolve(this.props.runtimeDomain, 'setWorkerChannelCapacity');
         let response = await Axios.post(url, axiosBody, axiosOptions);
-        await this.setState({saving: false});
 
         if (!response || !response.data) {
-          throw new Error("No response from server")
+          throw new Error("No response from server");
         } else if(!response.data.workerChannel) {
-          throw new Error("Worker has no WorkerChannels")
+          throw new Error("Response incomplete");
         }
 
-        await this.setState({workerChannel: response.data.workerChannel})
-        await this.props.setWorkerChannelChanged(this.state.workerChannel.sid, this.state.workerChannel.configuredCapacity !== this.state.capacity )
+        await this.setState({workerChannel: response.data.workerChannel}); // store our newly-recieved workerchannel
+        // Notify the Supercomponent of our new Changed state
+        await this.props.setWorkerChannelChanged(this.state.workerChannel.sid, this.state.workerChannel.configuredCapacity !== this.state.capacity );
       } catch(e) {
-        window.err("Error Saving Worker Channel: ", e)
+        window.err("Error Saving Worker Channel: ", e);
+      } finally {
+        await this.setState({saving: false}); // End up with a `false` saving stateZ
       }
 
     }
   }
 
+  /**
+   * Render function
+   */
   render() {
     return <Row>
       <Name>{this.state.workerChannel.taskChannelUniqueName}</Name>

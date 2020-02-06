@@ -15,14 +15,14 @@ exports.handler = TokenValidator(async function(context, event, callback) {
   // Make sure that required API values are sent
   if (!event.workerSid) {
     response.setStatusCode(400)
-    response.setBody({success: false, error: "Required fields not sent."});
+    response.setBody({ success: false, error: "Required fields not sent." });
     return callback(null, response);
   }
 
   // Make sure that this user is allowed to perform this action
   if (!(event.TokenResult.roles.includes('supervisor') || event.TokenResult.roles.includes('admin'))) {
     response.setStatusCode(403)
-    response.setBody({success: false, error: "User does not have the permissions to perform this action."});
+    response.setBody({ success: false, error: "User does not have the permissions to perform this action." });
     return callback(null, response);
   }
 
@@ -35,6 +35,6 @@ exports.handler = TokenValidator(async function(context, event, callback) {
     .workerChannels
     .list();
 
-  response.setBody({success: true, workerChannels: workerChannels});
+  response.setBody({ success: true, workerChannels: workerChannels });
   return callback(null, response);
 });

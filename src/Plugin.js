@@ -22,13 +22,16 @@ export default class Plugin extends FlexPlugin {
    */
   init(flex, manager) {
     Mods.applyMods(flex, manager, {
-      addPhoneNumber: true,
-      addWindowLog: true,
+      addPhoneNumber: false,
+      addWindowLog: false,
       addCustomTaskList: false,
     });
 
-    flex.WorkerCanvas.Content.add(<SupervisorCapacity key="supervisor-capacity" runtimeDomain={PluginConfig.runtimeDomain} token={manager.user.token} />)
+    flex.WorkerCanvas.Content.add( < SupervisorCapacity key = "supervisor-capacity"
+      runtimeDomain = { PluginConfig.runtimeDomain }
+      token = { manager.user.token }
+      />)
+
+    }
 
   }
-
-}

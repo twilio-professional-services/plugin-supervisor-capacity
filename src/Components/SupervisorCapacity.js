@@ -65,6 +65,18 @@ export default class SupervisorCapacity extends React.Component {
    * This function gets passed into WorkerChannel subcompenents. Each 
    * subcomponent can then send its Save functions up to this Component for use
    * by the Save Button
+   *
+   * Note: EVERY subcomponent's Save function will be called upon a Save. They
+   * are expected to be lightweight, idempotent, and only hit the API when a
+   * change is detected
+   *
+   * Why do it like this? 
+   *  - Each WorkerChannel subcomponent can handle its own state
+   *  - This component does not have to manage a complex system of WorkerChannel
+   *    capacities/changes
+   *  - The scale of WorkerChannels per Agent is practically limited. While this
+   *    approach wouldn't be recommeded in most areas, it should be in an area
+   *    with its own implied scaling limits.
    * 
    * @param {function} fn - The subcomponent's Save function
    */
@@ -75,7 +87,10 @@ export default class SupervisorCapacity extends React.Component {
   /**
    * This function gets passed into WorkerChannel subcompenents.  Each 
    * subcomponent can then send its Reset functions up to this Component for use
-   * by the Reset Button
+   * by the Reset Button.
+   *
+   * Note: EVERY subcomponent's Reset function will be called upon a Reset. They
+   * are expected to be lightweight, idempotent and not hit any API
    * 
    * @param {function} fn - The subcomponent's Reset function
    */
@@ -84,7 +99,7 @@ export default class SupervisorCapacity extends React.Component {
   }
 
   /**
-   * Determines whether any WorkerChannels have changed using the
+   * Determines whether any WorkerChannel subcomponents have changed using the
    * workerChannelChanges dict, then updates the `changed` state boolean
    */
   updateChanged() {

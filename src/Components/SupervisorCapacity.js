@@ -11,7 +11,7 @@ import {
   ButtonsContainer,
   SaveButton,
   ResetButton,
-} from './SupervisorCapacity.styles' 
+} from './SupervisorCapacity.styles'
 
 //  ============================================================================
 //  = SupervisorCapacity                                                       =
@@ -117,7 +117,7 @@ export default class SupervisorCapacity extends React.Component {
    * component's State with the new workerChannels
    */
   async getWorkerChannels() {
-    await this.setState({loading: true}); // Start out with a `true` loading state
+    await this.setState({ loading: true }); // Start out with a `true` loading state
 
     try {
 
@@ -133,22 +133,22 @@ export default class SupervisorCapacity extends React.Component {
 
       if (!response || !response.data) {
         throw new Error("No response from server");
-      } else if(!response.data.workerChannels) {
+      } else if (!response.data.workerChannels) {
         throw new Error("Worker has no WorkerChannels");
       }
 
       // Give us a blanks slate to work from
-      await this.setState({workerChannels: []}); // Empty out the workerChannels
-      this.workerChannelChanges = {};            // Empty out workerChannelChanges
-      this.updateChanged();                      // Set our changed state based on the above
+      await this.setState({ workerChannels: [] }); // Empty out the workerChannels
+      this.workerChannelChanges = {}; // Empty out workerChannelChanges
+      this.updateChanged(); // Set our changed state based on the above
 
       await this.setState({ workerChannels: response.data.workerChannels }); // Store our new WorkerChannels
-       
 
-    } catch(e) {
-      window.err("Error fetching Worker Channels: ", e);
+
+    } catch (e) {
+      console.error("Error fetching Worker Channels: ", e);
     } finally {
-      await this.setState({loading: false}); // End up with a `false` loading state
+      await this.setState({ loading: false }); // End up with a `false` loading state
 
     }
   }
@@ -156,8 +156,8 @@ export default class SupervisorCapacity extends React.Component {
   /**
    * Iterates over all the stored workerChannel Reset functions and runs them
    */
-  reset() {   
-    this.resetFunctions.forEach((resetFunction) => {resetFunction()});
+  reset() {
+    this.resetFunctions.forEach((resetFunction) => { resetFunction() });
   }
 
   /**
@@ -165,9 +165,9 @@ export default class SupervisorCapacity extends React.Component {
    * also setting the `loading` state before and after the functions run
    */
   async save() {
-    this.setState({loading: true}); // Start out with a `true` loading state
-    await Promise.all(this.saveFunctions.map((saveFunction) => {return saveFunction()}));
-    this.setState({loading: false}); // End up with a `false` loading state
+    this.setState({ loading: true }); // Start out with a `true` loading state
+    await Promise.all(this.saveFunctions.map((saveFunction) => { return saveFunction() }));
+    this.setState({ loading: false }); // End up with a `false` loading state
   }
 
   /**
@@ -175,47 +175,59 @@ export default class SupervisorCapacity extends React.Component {
    */
   render() {
     if (this.state.workerChannels.length > 0) {
-      return <Container>
-        <SectionHeader>
-          Channel Capacity
-        </SectionHeader>
+      return <Container >
+        <
+        SectionHeader >
+        Channel Capacity <
+        /SectionHeader>
 
-        <WorkerChannelsContainer className={this.state.loading ? "disabled" : "enabled"}>
-          {this.state.workerChannels.map((workerChannel) => {
+      <
+      WorkerChannelsContainer className = { this.state.loading ? "disabled" : "enabled" } > {
+          this.state.workerChannels.map((workerChannel) => {
             return <WorkerChannelPanel
-              token={this.props.token} 
-              runtimeDomain={this.props.runtimeDomain} 
-              addResetFunction={this.addResetFunction.bind(this)} 
-              addSaveFunction={this.addSaveFunction.bind(this)} 
-              workerChannel={workerChannel} 
-              setWorkerChannelChanged={this.setWorkerChannelChanged.bind(this)}
+            token = { this.props.token }
+            runtimeDomain = { this.props.runtimeDomain }
+            addResetFunction = { this.addResetFunction.bind(this) }
+            addSaveFunction = { this.addSaveFunction.bind(this) }
+            workerChannel = { workerChannel }
+            setWorkerChannelChanged = { this.setWorkerChannelChanged.bind(this) }
             />
-          })}
-        </WorkerChannelsContainer>
+          })
+        } <
+        /WorkerChannelsContainer>
 
-        <ButtonsContainer>
-          <SaveButton className="Twilio-Button" disabled={!this.state.changed || this.state.loading} onClick={this.save.bind(this)}>Save</SaveButton>
-          <ResetButton className="Twilio-Button" disabled={!this.state.changed || this.state.loading} onClick={this.reset.bind(this)}>Reset</ResetButton>
-        </ButtonsContainer>
-      </Container>
+      <
+      ButtonsContainer >
+        <
+        SaveButton className = "Twilio-Button"
+      disabled = {!this.state.changed || this.state.loading }
+      onClick = { this.save.bind(this) } > Save < /SaveButton> <
+      ResetButton className = "Twilio-Button"
+      disabled = {!this.state.changed || this.state.loading }
+      onClick = { this.reset.bind(this) } > Reset < /ResetButton> < /
+        ButtonsContainer > <
+        /Container>
     } else if (this.state.loading) {
-      return <Container>
-        <SectionHeader>
-          Channel Capacity
-        </SectionHeader>
-        <WorkerChannelsContainer>
-          <span className="pulsate">. . . loading</span>
-        </WorkerChannelsContainer>
-      </Container>
+      return <Container >
+        <
+        SectionHeader >
+        Channel Capacity <
+        /SectionHeader> <
+      WorkerChannelsContainer >
+        <
+        span className = "pulsate" > ...loading < /span> < /
+        WorkerChannelsContainer > <
+        /Container>
     } else {
-      return <Container>
-        <SectionHeader>
-          Channel Capacity
-        </SectionHeader>
-        <WorkerChannelsContainer>
-          No Worker Channels available
-        </WorkerChannelsContainer>
-      </Container>
+      return <Container >
+        <
+        SectionHeader >
+        Channel Capacity <
+        /SectionHeader> <
+      WorkerChannelsContainer >
+        No Worker Channels available <
+        /WorkerChannelsContainer> < /
+        Container >
     }
   }
 }

@@ -1,7 +1,6 @@
 // eslint-disable-next-line no-unused-vars
 import React from 'react';
 import { FlexPlugin } from 'flex-plugin';
-import * as Mods from './Mods'
 import PluginConfig from './config'
 
 import SupervisorCapacity from './Components/SupervisorCapacity';
@@ -21,12 +20,6 @@ export default class Plugin extends FlexPlugin {
    * @param manager { import('@twilio/flex-ui').Manager }
    */
   init(flex, manager) {
-    Mods.applyMods(flex, manager, {
-      addPhoneNumber: false,
-      addWindowLog: false,
-      addCustomTaskList: false,
-    });
-
     flex.WorkerCanvas.Content.add( < SupervisorCapacity key = "supervisor-capacity"
       runtimeDomain = { PluginConfig.runtimeDomain }
       token = { manager.user.token }

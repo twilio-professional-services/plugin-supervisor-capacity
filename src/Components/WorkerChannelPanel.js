@@ -8,7 +8,7 @@ import {
   Name,
   Capacity,
   Reset,
-} from './WorkerChannelPanel.styles' 
+} from './WorkerChannelPanel.styles'
 
 import ReloadIcon from './ReloadIcon'
 
@@ -50,8 +50,8 @@ export default class WorkerChannelPanel extends React.Component {
    * @param  {integer} newCapacity - The newly-set Capacity value
    */
   handleChange(newCapacity) {
-    this.setState({capacity: newCapacity}, () => {
-      this.props.setWorkerChannelChanged(this.state.workerChannel.sid, this.state.workerChannel.configuredCapacity !== this.state.capacity );
+    this.setState({ capacity: newCapacity }, () => {
+      this.props.setWorkerChannelChanged(this.state.workerChannel.sid, this.state.workerChannel.configuredCapacity !== this.state.capacity);
     });
   }
 
@@ -94,7 +94,7 @@ export default class WorkerChannelPanel extends React.Component {
    */
   async save() {
     if (this.state.workerChannel.configuredCapacity !== this.state.capacity) {
-      await this.setState({saving: true}); // Start out with a `true` saving state
+      await this.setState({ saving: true }); // Start out with a `true` saving state
 
       try {
         let axiosBody = {
@@ -107,7 +107,7 @@ export default class WorkerChannelPanel extends React.Component {
             Token: this.props.token,
           },
           headers: {
-              'Content-Type': 'application/json',
+            'Content-Type': 'application/json',
           }
         };
         let url = Url.resolve(this.props.runtimeDomain, 'setWorkerChannelCapacity');
@@ -115,17 +115,17 @@ export default class WorkerChannelPanel extends React.Component {
 
         if (!response || !response.data) {
           throw new Error("No response from server");
-        } else if(!response.data.workerChannel) {
+        } else if (!response.data.workerChannel) {
           throw new Error("Response incomplete");
         }
 
-        await this.setState({workerChannel: response.data.workerChannel}); // store our newly-recieved workerchannel
+        await this.setState({ workerChannel: response.data.workerChannel }); // store our newly-recieved workerchannel
         // Notify the Supercomponent of our new Changed state
-        await this.props.setWorkerChannelChanged(this.state.workerChannel.sid, this.state.workerChannel.configuredCapacity !== this.state.capacity );
-      } catch(e) {
-        window.err("Error Saving Worker Channel: ", e);
+        await this.props.setWorkerChannelChanged(this.state.workerChannel.sid, this.state.workerChannel.configuredCapacity !== this.state.capacity);
+      } catch (e) {
+        console.error("Error Saving Worker Channel: ", e);
       } finally {
-        await this.setState({saving: false}); // End up with a `false` saving stateZ
+        await this.setState({ saving: false }); // End up with a `false` saving stateZ
       }
 
     }
@@ -135,18 +135,27 @@ export default class WorkerChannelPanel extends React.Component {
    * Render function
    */
   render() {
-    return <Row>
-      <Name>{this.state.workerChannel.taskChannelUniqueName}</Name>
-      <Capacity><input disabled={this.state.saving} type="text" value={this.state.capacity} onBlur={this.onCapacityBlur.bind(this)} onChange={this.onCapacityChange.bind(this)} /></Capacity>
-      {(() => {
+    return <Row >
+      <
+      Name > { this.state.workerChannel.taskChannelUniqueName } < /Name> <
+      Capacity > < input disabled = { this.state.saving }
+    type = "text"
+    value = { this.state.capacity }
+    onBlur = { this.onCapacityBlur.bind(this) }
+    onChange = { this.onCapacityChange.bind(this) }
+    /></Capacity > {
+      (() => {
         if (this.state.workerChannel.configuredCapacity !== this.state.capacity) {
-          return <Reset onClick={this.reset.bind(this)}>
-            <ReloadIcon />
-          </Reset>
+          return <Reset onClick = { this.reset.bind(this) } >
+            <
+            ReloadIcon / >
+            <
+            /Reset>
         } else {
-          return <Reset />
+          return <Reset / >
         }
-      })()}
-    </Row>
+      })()
+    } <
+    /Row>
   }
 }

@@ -175,59 +175,60 @@ export default class SupervisorCapacity extends React.Component {
    */
   render() {
     if (this.state.workerChannels.length > 0) {
-      return <Container >
-        <
-        SectionHeader >
-        Channel Capacity <
-        /SectionHeader>
+      return <Container>
+        <SectionHeader>
+        Channel Capacity
+        </SectionHeader>
 
-      <
-      WorkerChannelsContainer className = { this.state.loading ? "disabled" : "enabled" } > {
-          this.state.workerChannels.map((workerChannel) => {
-            return <WorkerChannelPanel
-            token = { this.props.token }
-            runtimeDomain = { this.props.runtimeDomain }
-            addResetFunction = { this.addResetFunction.bind(this) }
-            addSaveFunction = { this.addSaveFunction.bind(this) }
-            workerChannel = { workerChannel }
-            setWorkerChannelChanged = { this.setWorkerChannelChanged.bind(this) }
-            />
-          })
-        } <
-        /WorkerChannelsContainer>
+        <WorkerChannelsContainer className = { this.state.loading ? "disabled" : "enabled" } > {
+            this.state.workerChannels.map((workerChannel) => {
+              return <WorkerChannelPanel
+              token = { this.props.token }
+              runtimeDomain = { this.props.runtimeDomain }
+              addResetFunction = { this.addResetFunction.bind(this) }
+              addSaveFunction = { this.addSaveFunction.bind(this) }
+              workerChannel = { workerChannel }
+              setWorkerChannelChanged = { this.setWorkerChannelChanged.bind(this) }
+              />
+            })
+          }
+        </WorkerChannelsContainer>
 
-      <
-      ButtonsContainer >
-        <
-        SaveButton className = "Twilio-Button"
-      disabled = {!this.state.changed || this.state.loading }
-      onClick = { this.save.bind(this) } > Save < /SaveButton> <
-      ResetButton className = "Twilio-Button"
-      disabled = {!this.state.changed || this.state.loading }
-      onClick = { this.reset.bind(this) } > Reset < /ResetButton> < /
-        ButtonsContainer > <
-        /Container>
+        <ButtonsContainer>
+          <SaveButton 
+            className = "Twilio-Button"
+            disabled = {!this.state.changed || this.state.loading }
+            onClick = { this.save.bind(this) }
+          >
+            Save
+          </SaveButton>
+          <ResetButton
+            className = "Twilio-Button"
+            disabled = {!this.state.changed || this.state.loading }
+            onClick = { this.reset.bind(this) }
+          >
+            Reset
+          </ResetButton>
+        </ButtonsContainer>
+      </Container>
     } else if (this.state.loading) {
-      return <Container >
-        <
-        SectionHeader >
-        Channel Capacity <
-        /SectionHeader> <
-      WorkerChannelsContainer >
-        <
-        span className = "pulsate" > ...loading < /span> < /
-        WorkerChannelsContainer > <
-        /Container>
+      return <Container>
+        <SectionHeader>
+          Channel Capacity
+        </SectionHeader>
+        <WorkerChannelsContainer>
+          <span className = "pulsate" > ...loading </span>
+        </WorkerChannelsContainer>
+      </Container>
     } else {
-      return <Container >
-        <
-        SectionHeader >
-        Channel Capacity <
-        /SectionHeader> <
-      WorkerChannelsContainer >
-        No Worker Channels available <
-        /WorkerChannelsContainer> < /
-        Container >
+      return <Container>
+        <SectionHeader>
+          Channel Capacity
+        </SectionHeader>
+        <WorkerChannelsContainer>
+          No Worker Channels available
+        </WorkerChannelsContainer>
+      </Container >
     }
   }
 }

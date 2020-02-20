@@ -127,7 +127,9 @@ export default {
 
 ```
 
-## Plugin Deployment
+And now your plugin is fully configured! You can now run it locally to test and customize it, or build it into a package and upload it to your Twilio Assets for hosted use.
+
+## Local Development/Deployment
 
 In order to develop locally, you can use the Webpack Dev Server by running:
 

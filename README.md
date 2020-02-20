@@ -57,7 +57,7 @@ var accountSid = 'AC...';
 Next, we'll need to configure the environment variables for the Twilio Functions. Start by renaming the environment file to remove `.example` and opening it with your editor:
 
 ```bash
-touch src/Functions/.env
+mv src/Functions/.env.example src/Functions/.env
 
 vim src/Functions/.env
 ```

@@ -48,6 +48,17 @@ export default class SupervisorCapacity extends React.Component {
   }
 
   /**
+   * Builtin React Component Method that gets run whenever this component
+   * updates. We're using it here to ensure that our workerChannels update
+   * whenever a new worker is selected.
+   */
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    if (prevProps.worker !== this.props.worker) {
+      this.getWorkerChannels();
+    }
+  }
+
+  /**
    * This function gets passed into WorkerChannel subcomponents. Each 
    * subcomponent can then use it to notify this Component of a change
    * 

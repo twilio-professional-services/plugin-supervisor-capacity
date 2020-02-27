@@ -1,6 +1,6 @@
 # Flex Supervisor Capacity Plugin
 
-This plugin implements a *Channels Capacity* panel in the [Twilio Flex](https://www.twilio.com/flex) [Supervisor View](https://www.twilio.com/docs/flex/monitor-agent-activity). It includes code for [Twilio Functions](https://www.twilio.com/docs/runtime/functions) as well as frontend UI code in the form of a [Flex plugin](https://www.twilio.com/docs/flex/quickstart/getting-started-plugin).
+This plugin implements a *Channel Capacity* panel in the [Twilio Flex](https://www.twilio.com/flex) [Supervisor View](https://www.twilio.com/docs/flex/monitor-agent-activity). It includes code for [Twilio Functions](https://www.twilio.com/docs/runtime/functions) as well as frontend UI code in the form of a [Flex plugin](https://www.twilio.com/docs/flex/quickstart/getting-started-plugin).
 
 ![Plugin Demo](https://github.com/twilio-professional-services/plugin-supervisor-capacity/blob/media/supervisor-capacity-recording.gif)
 
@@ -57,7 +57,7 @@ var accountSid = 'AC...';
 Next, we'll need to configure the environment variables for the Twilio Functions. Start by renaming the environment file to remove `.example` and opening it with your editor:
 
 ```bash
-touch src/Functions/.env
+mv src/Functions/.env.example src/Functions/.env
 
 vim src/Functions/.env
 ```
@@ -127,7 +127,9 @@ export default {
 
 ```
 
-## Plugin Deployment
+And now your plugin is fully configured! You can now run it locally to test and customize it, or build it into a package and upload it to your Twilio Assets for hosted use.
+
+## Local Development/Deployment
 
 In order to develop locally, you can use the Webpack Dev Server by running:
 

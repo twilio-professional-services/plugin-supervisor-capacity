@@ -104,7 +104,7 @@ export default class WorkerChannelPanel extends React.Component {
         };
         let axiosOptions = {
           params: {
-            Token: this.props.token,
+            Token: this.props.token(),
           },
           headers: {
             'Content-Type': 'application/json',

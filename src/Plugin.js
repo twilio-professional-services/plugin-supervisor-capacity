@@ -20,9 +20,13 @@ export default class Plugin extends FlexPlugin {
    * @param manager { import('@twilio/flex-ui').Manager }
    */
   init(flex, manager) {
+    const getToken = () => {
+      return manager.store.getState().flex.session.ssoTokenPayload.token;
+    }
+
     flex.WorkerCanvas.Content.add( < SupervisorCapacity key = "supervisor-capacity"
       runtimeDomain = { PluginConfig.runtimeDomain }
-      token = { manager.user.token }
+      token = { getToken }
       />)
 
     }

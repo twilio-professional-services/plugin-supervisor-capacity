@@ -134,7 +134,7 @@ export default class SupervisorCapacity extends React.Component {
 
       let axiosOptions = {
         params: {
-          Token: this.props.token,
+          Token: (this.props.token()),
           workerSid: this.props.worker.sid
         }
       };

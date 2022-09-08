@@ -4,6 +4,8 @@ This plugin implements a *Channel Capacity* panel in the [Twilio Flex](https://w
 
 ![Plugin Demo](https://github.com/twilio-professional-services/plugin-supervisor-capacity/blob/media/supervisor-capacity-recording.gif)
 
+**For the Flex UI 2.x version of this plugin, see [the flex-ui-v2 branch](https://github.com/twilio-professional-services/plugin-supervisor-capacity/tree/flex-ui-v2).**
+
 ## Setup
 
 ### Prerequisites

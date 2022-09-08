@@ -4,6 +4,8 @@ This plugin implements a *Channel Capacity* panel in the [Twilio Flex](https://w
 
 ![Plugin Demo](https://github.com/twilio-professional-services/plugin-supervisor-capacity/blob/media/supervisor-capacity-recording.gif)
 
+**For the Flex UI 1.x version of this plugin, see [the master branch](https://github.com/twilio-professional-services/plugin-supervisor-capacity/tree/master).**
+
 ## Setup
 
 ### Prerequisites
@@ -44,15 +46,6 @@ mv public/appConfig.example.js public/appConfig.js
 vim public/appConfig.js
 ```
 
-You'll notice that this file has a temporary string variable for your Account Sid. Replace that string with your actual value.
-
-```javascript
-# Before:
-var accountSid = 'accountSid';
-
-# After
-var accountSid = 'AC...';
-```
 #### src/Functions/.env
 Next, we'll need to configure the environment variables for the Twilio Functions. Start by renaming the environment file to remove `.example` and opening it with your editor:
 

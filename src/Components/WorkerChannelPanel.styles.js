@@ -1,4 +1,4 @@
-import styled from 'react-emotion';
+import { styled } from '@twilio/flex-ui';
 
 export const Row = styled('div')`
   display: flex;
@@ -29,18 +29,7 @@ export const Capacity = styled('div')`
   flex-shrink: 0;
   flex-direction: row;
 
-
   input {
-      color: #222222;
-      border: 1px solid #C6CAD7;
-      font-size: 12px;
-      box-shadow: none;
-      box-sizing: border-box;
-      line-height: 16px;
-      padding-top: 7px;
-      padding-left: 12px;
-      padding-right: 12px;
-      padding-bottom: 7px;
       width: 56px;
   }
 `

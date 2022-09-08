@@ -1,4 +1,4 @@
-import * as FlexPlugin from 'flex-plugin';
+import * as FlexPlugin from '@twilio/flex-plugin';
 import Plugin from './Plugin';
 
 FlexPlugin.loadPlugin(Plugin);

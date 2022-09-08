@@ -3,14 +3,14 @@ import React from 'react';
 import Url from 'url'
 import Axios from 'axios';
 
+import {Button} from '@twilio-paste/core/button';
+import {Flex} from '@twilio-paste/core/flex';
+import {Stack} from '@twilio-paste/core/stack';
 import WorkerChannelPanel from './WorkerChannelPanel';
 import {
   SectionHeader,
   Container,
   WorkerChannelsContainer,
-  ButtonsContainer,
-  SaveButton,
-  ResetButton,
 } from './SupervisorCapacity.styles'
 
 //  ============================================================================
@@ -204,23 +204,22 @@ export default class SupervisorCapacity extends React.Component {
             })
           }
         </WorkerChannelsContainer>
-
-        <ButtonsContainer>
-          <SaveButton 
-            className = "Twilio-Button"
-            disabled = {!this.state.changed || this.state.loading }
-            onClick = { this.save.bind(this) }
-          >
-            Save
-          </SaveButton>
-          <ResetButton
-            className = "Twilio-Button"
-            disabled = {!this.state.changed || this.state.loading }
-            onClick = { this.reset.bind(this) }
-          >
-            Reset
-          </ResetButton>
-        </ButtonsContainer>
+        <Flex hAlignContent='right' margin='space50'>
+          <Stack orientation='horizontal' spacing='space30'>
+            <Button
+              variant='secondary'
+              disabled={!this.state.changed || this.state.loading }
+              onClick={ this.reset.bind(this) }>
+              Reset
+            </Button>
+            <Button
+              variant='primary'
+              disabled={!this.state.changed || this.state.loading }
+              onClick={ this.save.bind(this) }>
+              Save
+            </Button>
+          </Stack>
+        </Flex>
       </Container>
     } else if (this.state.loading) {
       return <Container>

@@ -1,6 +1,7 @@
 // eslint-disable-next-line no-unused-vars
 import React from 'react';
-import { FlexPlugin } from 'flex-plugin';
+import { FlexPlugin } from '@twilio/flex-plugin';
+import { CustomizationProvider } from "@twilio-paste/core/customization";
 import PluginConfig from './config'
 
 import SupervisorCapacity from './Components/SupervisorCapacity';
@@ -20,6 +21,11 @@ export default class Plugin extends FlexPlugin {
    * @param manager { import('@twilio/flex-ui').Manager }
    */
   init(flex, manager) {
+    
+    flex.setProviders({
+        PasteThemeProvider: CustomizationProvider,
+    });
+    
     const getToken = () => {
       return manager.store.getState().flex.session.ssoTokenPayload.token;
     }

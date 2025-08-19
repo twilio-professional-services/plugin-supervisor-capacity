@@ -1,6 +1,8 @@
-# Flex Supervisor Capacity Plugin
+# Notice - Legacy Code
 
-**This plugin is no longer maintained as of 21 October 2022. Work to demonstrate this feature has been moved over to the [Flex Project Template](https://github.com/twilio-professional-services/flex-project-template) where it is an [optional feature](https://github.com/twilio-professional-services/flex-project-template/blob/main/plugin-flex-ts-template-v2/src/feature-library/supervisor-capacity/README.md).**
+**This plugin is no longer maintained and has been migrated to the [Flex Plugin Library](https://www.twilio.com/docs/flex/developer/plugins/plugin-library) where it is available as an out-of-box feature. The plugin is also available as part of the customizable [Flex Project Template](https://github.com/twilio-professional-services/flex-project-template), where it is an optional feature.**
+
+# Flex Supervisor Capacity Plugin
 
 This plugin implements a *Channel Capacity* panel in the [Twilio Flex](https://www.twilio.com/flex) [Supervisor View](https://www.twilio.com/docs/flex/monitor-agent-activity). It includes code for [Twilio Functions](https://www.twilio.com/docs/runtime/functions) as well as frontend UI code in the form of a [Flex plugin](https://www.twilio.com/docs/flex/quickstart/getting-started-plugin).
 
